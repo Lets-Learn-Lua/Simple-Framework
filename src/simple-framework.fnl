@@ -3,14 +3,12 @@
 ;;; Version 1
 
 ;;; API
-;;; start()
-;;; stop()
-;;; setup-systems()
 ;;; get-system()
+;;; setup-systems()
+;;; start()
 ;;; 
-;;; on-start()
-;;; on-stop()
 ;;; on-setup()
+;;; on-start()
 ;;; on-update(delta-time)
 
 ;;; Root
@@ -39,18 +37,9 @@
 (fn root.start []
   (each [_ system (ipairs systems)]
     (when system.on-start
-      (system.on-start))
+      ((coroutine.wrap system.on-start)))
     (when system.on-update
-      (tset system :update-connection (run-service.RenderStepped:Connect
-                                       system.on-update)))))
-
-(fn root.stop []
-  (each [_ system (ipairs systems)]
-    (when system.on-update
-      (system.update-connection:Disconnect))
-    (when system.on-stop
-      (system.on-stop)))
-  (table.clear systems))
+      (run-service.RenderStepped:Connect system.on-update))))
 
 ;;; Return
 root

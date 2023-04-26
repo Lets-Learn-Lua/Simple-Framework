@@ -9,7 +9,6 @@ root["get-system"] = function(name)
   end
 end
 root["setup-systems"] = function(directory)
-  systems = {}
   for _, child in ipairs(directory:GetChildren()) do
     if child:IsA("ModuleScript") then
       local system = require(child)
@@ -26,24 +25,11 @@ end
 root.start = function()
   for _, system in ipairs(systems) do
     if system["on-start"] then
-      system["on-start"]()
+      coroutine.wrap(system["on-start"])()
     else
     end
     if system["on-update"] then
-      system["update-connection"] = (run_service.RenderStepped):Connect(system["on-update"])
-    else
-    end
-  end
-  return nil
-end
-root.stop = function()
-  for _, system in ipairs(systems) do
-    if system["on-stop"] then
-      system["on-stop"]()
-    else
-    end
-    if system["on-update"] then
-      do end (system["update-connection"]):Disconnect()
+      do end (run_service.RenderStepped):Connect(system["on-update"])
     else
     end
   end

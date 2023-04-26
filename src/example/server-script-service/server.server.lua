@@ -1,0 +1,10 @@
+local server_script_service = game:GetService("ServerScriptService")
+local replicated_storage = game:GetService("ReplicatedStorage")
+local libraries = replicated_storage:WaitForChild("libraries")
+local simple_framework = require(libraries:WaitForChild("simple-framework"))
+local systems = server_script_service:WaitForChild("systems")
+local function main()
+  simple_framework["setup-systems"](systems:GetChildren())
+  return simple_framework.start()
+end
+return main()
